@@ -6,12 +6,18 @@ class TimelineItem {
   final String description;
   final Widget child;
   final Color bubbleColor;
-
-  const TimelineItem({
-    @required this.title,
-    this.subtitle,
-    this.description,
-    @required this.child,
-    @required this.bubbleColor,
-  });
+  final TimelineItemDirection subtitleDirection;
+  final TimelineItemDirection descriptionDirection;
+  final TimelineItemDirection widgetDirection;
+  const TimelineItem(
+      {@required this.title,
+      @required this.subtitle,
+      @required this.description,
+      @required this.child,
+      @required this.bubbleColor,
+      @required this.subtitleDirection,
+      @required this.descriptionDirection,
+      @required this.widgetDirection});
 }
+
+enum TimelineItemDirection { Left, Right }

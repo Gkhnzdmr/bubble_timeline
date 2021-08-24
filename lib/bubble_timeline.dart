@@ -39,8 +39,7 @@ class _BubbleTimelineState extends State<BubbleTimeline> {
     for (var i = 0; i < widget.items.length; i++) {
       _items.add(
         TimelineBubble(
-          direction:
-              checkEven(i) ? Config.leftDirection : Config.rightDirection,
+          direction: widget.items[i].widgetDirection,
           size: widget.bubbleDiameter,
           title: widget.items[i].title,
           subtitle: widget.items[i].subtitle,
@@ -49,6 +48,8 @@ class _BubbleTimelineState extends State<BubbleTimeline> {
           stripColor: widget.stripColor,
           bubbleColor: widget.items[i].bubbleColor,
           bgColor: widget.scaffoldColor,
+          subtitleDirection: widget.items[i].subtitleDirection,
+          descriptionDirection: widget.items[i].descriptionDirection,
         ),
       );
     }
@@ -123,7 +124,7 @@ class BottomHandle extends StatelessWidget {
 }
 
 class TimelineBubble extends StatelessWidget {
-  final String direction;
+  final TimelineItemDirection direction;
   final double size;
   final String title;
   final String subtitle;
@@ -132,6 +133,8 @@ class TimelineBubble extends StatelessWidget {
   final Color stripColor;
   final Color bgColor;
   final Color bubbleColor;
+  final TimelineItemDirection subtitleDirection;
+  final TimelineItemDirection descriptionDirection;
 
   const TimelineBubble({
     @required this.direction,
@@ -143,6 +146,8 @@ class TimelineBubble extends StatelessWidget {
     @required this.stripColor,
     @required this.bgColor,
     @required this.bubbleColor,
+    @required this.subtitleDirection,
+    @required this.descriptionDirection,
   });
   @override
   Widget build(BuildContext context) {
@@ -151,37 +156,35 @@ class TimelineBubble extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: direction == Config.leftDirection
-                ? <Widget>[
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        subtitle,
-                        textAlign: TextAlign.right,
-                      ),
-                    ],
-                    if (description != null) ...[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        description,
-                        textAlign: TextAlign.right,
-                      ),
-                    ],
-                  ]
-                : [],
-          ),
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                title != null && direction == TimelineItemDirection.Left
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(title, textAlign: TextAlign.right),
+                        ],
+                      )
+                    : Container(),
+                subtitle != null &&
+                        subtitleDirection == TimelineItemDirection.Left
+                    ? Column(
+                        children: [
+                          Text(subtitle, textAlign: TextAlign.right),
+                        ],
+                      )
+                    : Container(),
+                description != null &&
+                        descriptionDirection == TimelineItemDirection.Left
+                    ? Column(
+                        children: [
+                          Text(description, textAlign: TextAlign.right),
+                        ],
+                      )
+                    : Container()
+              ]),
         ),
         Container(
           child: Column(
@@ -207,7 +210,7 @@ class TimelineBubble extends StatelessWidget {
                             color: stripColor,
                           ),
                         ),
-                        clipper: direction == Config.leftDirection
+                        clipper: direction == TimelineItemDirection.Left
                             ? LeftClipper()
                             : RightClipper(),
                       ),
@@ -239,37 +242,35 @@ class TimelineBubble extends StatelessWidget {
         ),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: direction == Config.rightDirection
-                ? <Widget>[
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        subtitle,
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                    if (description != null) ...[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        description,
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                  ]
-                : [],
-          ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                title != null && direction == TimelineItemDirection.Right
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(title, textAlign: TextAlign.left),
+                        ],
+                      )
+                    : Container(),
+                subtitle != null &&
+                        subtitleDirection == TimelineItemDirection.Right
+                    ? Column(
+                        children: [
+                          Text(subtitle, textAlign: TextAlign.left),
+                        ],
+                      )
+                    : Container(),
+                description != null &&
+                        descriptionDirection == TimelineItemDirection.Right
+                    ? Column(
+                        children: [
+                          Text(description, textAlign: TextAlign.left),
+                        ],
+                      )
+                    : Container()
+              ]),
         ),
       ],
     );
